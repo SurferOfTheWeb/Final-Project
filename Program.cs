@@ -12,33 +12,19 @@ string choice;
 
 do
 {
-    Console.WriteLine("What would you like to do?\n\t1. Display products\n\t2. Add a product\n\t3. Edit a record\n\t\"q\" to quit");
+    Console.WriteLine("What would you like to do?\n\t1. Display products\n\t2. Add a product\n\t3. Edit a product\n\t4. View product info\n\t\"q\" to quit");
     choice = Console.ReadLine(); Console.Clear();
     logger.Info($"Main menu: option {choice} selected");
 
-    if(choice == "1")
-    {
-        var query = db.Products.OrderBy(p => p.ProductName);
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine($"{query.Count()} records returned");
+    if(choice == "1"){
+        
         Console.WriteLine("Which products would you like to see?\n\t1. All products\n\t2. Only active products\n\t3. Only discontinued products"); 
         string productTypeChoice = Console.ReadLine();
         logger.Info($"Product choice: option {choice} selected");
 
-        foreach (var item in query)
-        {
-            if(item.Discontinued && (productTypeChoice == "1" || productTypeChoice == "3")){
-                Console.ForegroundColor = ConsoleColor.DarkGray;
-                Console.WriteLine($"{item.ProductName}");
-                Console.ForegroundColor = ConsoleColor.White;
-            }
-            else if (productTypeChoice == "1" || productTypeChoice == "2"){
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine($"{item.ProductName}");
-            }
-        }
-        Console.ForegroundColor = ConsoleColor.White;
-        
+        if (productTypeChoice == "1") displayProducts(true, true); 
+        if (productTypeChoice == "2") displayProducts(true, false);
+        if (productTypeChoice == "3") displayProducts(false, true);        
     }
 
     if(choice == "2"){
@@ -60,6 +46,22 @@ do
     }
     
     if(choice == "3"){
+        displayProducts(true, true);
+        Console.WriteLine("Which product would you like to edit?"); int productChoice = Convert.ToInt32(Console.ReadLine());
+    }
+
+    if(choice == "4"){
+        displayProducts(true, true);
+        Console.WriteLine("Which product would you like to expand? > "); int productChoice = Convert.ToInt32(Console.ReadLine());
+        var entry = db.Products.First(p => p.ProductId == productChoice); Console.Clear();
+
+        Console.WriteLine("\nProduct Name: " + entry.ProductName);
+        Console.WriteLine("\tQuantity Per Unit: " + entry.QuantityPerUnit);
+        Console.WriteLine("\tUnit Price: " + entry.UnitPrice);
+        Console.WriteLine("\tUnits in Stock: " + entry.UnitsInStock);
+        Console.WriteLine("\tUnits on Order: " + entry.UnitsOnOrder);
+        Console.WriteLine("\tReorder Level: " + entry.ReorderLevel);
+        Console.WriteLine("\tDiscontinued Status: " + entry.Discontinued);
 
     }
 
@@ -67,5 +69,27 @@ do
 
 } while (choice.ToLower() != "q");
 
-
+Console.Clear();
 logger.Info("Program ended");
+
+void displayProducts(bool allowActive, bool allowDiscontinued){
+    var query = db.Products.OrderBy(p => p.ProductId);
+
+    foreach (var item in query){
+        
+        if(item.Discontinued && allowDiscontinued){
+            Console.Write(item.ProductId + ". ");
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine($"{item.ProductName}");
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+        else if (!item.Discontinued && allowActive) {
+            Console.Write(item.ProductId + ". "); 
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine($"{item.ProductName}");
+        }
+    }
+
+    Console.Write("\n");
+    Console.ForegroundColor = ConsoleColor.White;
+}
