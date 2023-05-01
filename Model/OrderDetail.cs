@@ -11,7 +11,6 @@ namespace EF_SQL_Practice.Model
         public decimal UnitPrice { get; set; }
         public short Quantity { get; set; }
         public decimal Discount { get; set; }
-
         public virtual Order Order { get; set; }
         public virtual Product Product { get; set; }
     }
