@@ -27,7 +27,7 @@ do
         if (productTypeChoice == "3") displayProducts(false, true);        
     }
 
-    if(choice == "2"){
+    else if(choice == "2"){
 
         var toBeAdded = new Product();
 
@@ -45,12 +45,50 @@ do
         
     }
     
-    if(choice == "3"){
+    else if(choice == "3"){
         displayProducts(true, true);
         Console.WriteLine("Which product would you like to edit?"); int productChoice = Convert.ToInt32(Console.ReadLine());
+        var entry = db.Products.First(p => p.ProductId == productChoice); Console.Clear();
+
+        Console.WriteLine("\n1. Product Name: (" + entry.ProductName + ")");
+        Console.WriteLine("2. Quantity Per Unit (" + entry.QuantityPerUnit + ")");
+        Console.WriteLine("3. Unit Price (" + entry.UnitPrice + ")");
+        Console.WriteLine("4. Units in Stock (" + entry.UnitsInStock + ")");
+        Console.WriteLine("5. Units on Order (" + entry.UnitsOnOrder + ")");
+        Console.WriteLine("6. Reorder Level (" + entry.ReorderLevel + ")");
+        Console.WriteLine("7. Discontinued Status (" + entry.Discontinued + ")");
+
+        Console.Write("Which element would you like to update?\n > "); int elementToEdit = Convert.ToInt16(Console.ReadLine());
+        Console.Write("What would you like to change it to?\n > ");
+        
+        if(elementToEdit == 1){
+            entry.ProductName = Console.ReadLine();
+        }
+        else if(elementToEdit == 2){
+            entry.QuantityPerUnit = Console.ReadLine();
+        }
+        else if(elementToEdit == 3){
+            entry.UnitPrice = Convert.ToInt16(Console.ReadLine());
+        }
+        else if(elementToEdit == 4){
+            entry.UnitsInStock = Convert.ToInt16(Console.ReadLine());
+        }
+        else if(elementToEdit == 5){
+            entry.UnitsOnOrder = Convert.ToInt16(Console.ReadLine());
+        }
+        else if(elementToEdit == 6){
+            entry.ReorderLevel = Convert.ToInt16(Console.ReadLine());
+        }
+        else if(elementToEdit == 7){
+            entry.Discontinued = Convert.ToBoolean( Console.ReadLine().ToLower());
+        }
+        else{
+            Console.WriteLine("Invalid entry given.");
+        }
+       
     }
 
-    if(choice == "4"){
+    else if(choice == "4"){
         displayProducts(true, true);
         Console.WriteLine("Which product would you like to expand? > "); int productChoice = Convert.ToInt32(Console.ReadLine());
         var entry = db.Products.First(p => p.ProductId == productChoice); Console.Clear();
